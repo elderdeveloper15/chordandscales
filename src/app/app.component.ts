@@ -69,7 +69,7 @@ export class AppComponent {
       if (pitch && clarity > 0.9) {
         this.currentFrequency = pitch;
         const midi = freqToMidi(pitch);
-        this.currentNote = Note.fromMidi(midi);
+        this.currentNote = Note.pitchClass(Note.fromMidi(midi));
         this.processNote();
       }
     }, 100);
@@ -81,7 +81,8 @@ export class AppComponent {
       // Ejecutamos dentro de NgZone para que Angular detecte los cambios
       this.ngZone.run(() => {
         console.log(`Callback de nota recibido: ${note}, Velocidad: ${velocity}`);
-        this.currentNote = note;
+        this.currentNote = Note.pitchClass(note);
+        console.log('Nota actual:', this.currentNote);
         const frequency = Note.freq(note);
         if (frequency !== null) {
           this.currentFrequency = frequency;
@@ -95,41 +96,70 @@ export class AppComponent {
   }
 
   processNote() {
-    if (this.currentNote && !this.playedNotes.includes(this.currentNote)) {
-      this.playedNotes.push(this.currentNote);
-      this.analyzeScale();
+    if (this.currentNote) {
+      const pitchClass = Note.pitchClass(this.currentNote);
+      if (pitchClass && !this.playedNotes.includes(pitchClass)) {
+        this.playedNotes.push(pitchClass);
+        console.log('Notas tocadas:', this.playedNotes);
+  
+        // Verificamos si hay al menos 3 notas únicas
+        if (this.playedNotes.length >= 3) {
+          this.analyzeScale();
+        }
+      }
     }
-  }
+  }  
 
   analyzeScale() {
-    // Aquí modificamos la lógica para tener en cuenta el género seleccionado
+    // Obtenemos las escalas posibles según el género seleccionado
     const possibleScales = this.getScalesForGenre(this.selectedGenre).filter((scaleName) => {
       const scale = Scale.get(`${this.currentNote} ${scaleName}`);
-      return this.playedNotes.every((note) => scale.notes.includes(note));
+  
+      // Convertimos las notas de la escala a su clase de tono
+      const scaleNotes = scale.notes.map((note) => Note.pitchClass(note));
+  
+      // Verificamos si todas las notas tocadas están en la escala
+      const includesAllNotes = this.playedNotes.every((note) => scaleNotes.includes(note));
+  
+      return includesAllNotes;
     });
-
+  
+    console.log('Possible Scales:', possibleScales);
+  
     if (possibleScales.length > 0) {
       this.currentScale = `${this.currentNote} ${possibleScales[0]}`;
       this.suggestChords();
+    } else {
+      console.warn('No se encontraron escalas que incluyan las notas tocadas.');
+      this.currentScale = '';
+      this.suggestedChords = [];
     }
   }
+  
 
   suggestChords() {
+    if (!this.currentScale) {
+      return;
+    }
     const scale = Scale.get(this.currentScale);
+  
     this.suggestedChords = scale.notes.map((note) => {
       const chordType = this.getChordTypeForGenre(this.selectedGenre);
       const chord = Chord.getChord(chordType, note);
       return chord.name;
     });
   }
+  
 
   reset() {
     this.playedNotes = [];
     this.currentScale = '';
     this.suggestedChords = [];
+    this.currentNote = '';
+    this.currentFrequency = 0;
     this.audioStarted = false;
-    this.selectedGenre = "";
-    this.selectedInputType = "";
+    this.selectedGenre = '';
+    this.selectedInputType = '';
     // Detener los servicios si es necesario
     this.audioService.stop();
     this.midiService.stop();
