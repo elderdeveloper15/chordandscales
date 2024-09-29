@@ -52,4 +52,10 @@ export class AudioService {
     const [pitch, clarity] = this.detector.findPitch(this.buffer, this.audioContext.sampleRate);
     return { pitch, clarity };
   }
+
+  stop() {
+    if (this.stream) {
+      this.stream.getTracks().forEach((track) => track.stop());
+    }
+  }
 }

@@ -10,11 +10,21 @@
       <option *ngFor="let genre of genres" [value]="genre">{{ genre }}</option>
     </select>
 
-    <button (click)="startAudio()" [disabled]="!selectedGenre">Iniciar Detección de Audio</button>
+    <p>Selecciona el tipo de entrada:</p>
+    <select [(ngModel)]="selectedInputType">
+      <option [ngValue]="null" disabled selected>Selecciona una opción</option>
+      <option value="microphone">Micrófono</option>
+      <option value="midi">MIDI</option>
+    </select>
+
+    <button (click)="start()" [disabled]="!selectedGenre || !selectedInputType">
+      Iniciar Detección
+    </button>
   </div>
 
   <div *ngIf="audioStarted">
     <p><strong>Género Seleccionado:</strong> {{ selectedGenre }}</p>
+    <p><strong>Tipo de Entrada:</strong> {{ selectedInputType === 'microphone' ? 'Micrófono' : 'MIDI' }}</p>
     <p><strong>Nota Actual:</strong> {{ currentNote }} ({{ currentFrequency | number:'1.0-2' }} Hz)</p>
     <p><strong>Notas Tocadas:</strong> {{ playedNotes.join(', ') }}</p>
 

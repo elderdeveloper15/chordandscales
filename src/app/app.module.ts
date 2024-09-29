@@ -2,10 +2,11 @@
 
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms'; // Importamos FormsModule
+import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { AudioService } from './services/audio.service';
+import { MidiService } from './services/midi.service'; // Importa el servicio MIDI
 
 @NgModule({
   declarations: [
@@ -14,11 +15,11 @@ import { AudioService } from './services/audio.service';
   ],
   imports: [
     BrowserModule,
-    FormsModule, // Agregamos FormsModule a los imports
+    FormsModule,
   ],
   providers: [
     AudioService,
-    // Otros servicios
+    MidiService, // Agrega el servicio MIDI
   ],
   bootstrap: [AppComponent],
 })

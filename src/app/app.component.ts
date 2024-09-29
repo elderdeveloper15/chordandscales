@@ -2,6 +2,7 @@
 
 import { Component } from '@angular/core';
 import { AudioService } from './services/audio.service';
+import { MidiService } from './services/midi.service'; // Importa el servicio MIDI
 import { freqToMidi } from '@tonaljs/midi';
 import  Note  from '@tonaljs/note';
 import { Scale, Chord } from '@tonaljs/tonal';
@@ -25,40 +26,72 @@ export class AppComponent {
   // Lista de géneros disponibles
   genres: string[] = ['Rock', 'Jazz', 'Blues', 'Pop', 'Clásica'];
 
-  constructor(private audioService: AudioService) {}
+  selectedInputType!: string; // 'microphone' o 'midi'
 
-  async startAudio() {
-    if (!this.selectedGenre) {
-      alert('Por favor, selecciona un género musical antes de continuar.');
+
+  constructor(
+    private audioService: AudioService,
+    private midiService: MidiService // Inyectamos el servicio MIDI
+  ) {}
+
+  async start() {
+    if (!this.selectedGenre || !this.selectedInputType) {
+      alert('Por favor, selecciona el género musical y el tipo de entrada antes de continuar.');
       return;
     }
 
     try {
-      await this.audioService.initAudio();
-      if (this.audioService.getAudioContext().state === 'suspended') {
-        await this.audioService.getAudioContext().resume();
+      if (this.selectedInputType === 'microphone') {
+        await this.audioService.initAudio();
+        const audioContext = this.audioService.getAudioContext();
+        if (audioContext.state === 'suspended') {
+          await audioContext.resume();
+        }
+        this.audioStarted = true;
+        this.updatePitchFromMicrophone();
+      } else if (this.selectedInputType === 'midi') {
+        await this.midiService.initMidi();
+        this.audioStarted = true;
+        this.updatePitchFromMidi();
       }
-      this.audioStarted = true;
-      this.updatePitch();
     } catch (err) {
-      console.error('No se pudo inicializar el audio:', err);
-      alert('Error al acceder al micrófono. Por favor, verifica los permisos.');
+      console.error('No se pudo inicializar la entrada:', err);
+      alert('Error al acceder a la entrada seleccionada. Por favor, verifica los permisos.');
     }
   }
 
-  updatePitch() {
+  updatePitchFromMicrophone() {
     setInterval(() => {
       const { pitch, clarity } = this.audioService.getPitch();
       if (pitch && clarity > 0.9) {
         this.currentFrequency = pitch;
         const midi = freqToMidi(pitch);
         this.currentNote = Note.fromMidi(midi);
-        if (this.currentNote && !this.playedNotes.includes(this.currentNote)) {
-          this.playedNotes.push(this.currentNote);
-          this.analyzeScale();
-        }
+        this.processNote();
       }
     }, 100);
+  }
+
+  updatePitchFromMidi() {
+    this.midiService.onNoteReceived((note: string, velocity: number) => {
+      this.currentNote = note;
+      const frequency = Note.freq(note);
+        if (frequency !== null) {
+          this.currentFrequency = frequency;
+        }
+        else {
+        console.warn(`No se pudo obtener la frecuencia para la nota ${note}`);
+        this.currentFrequency = 0; // O maneja este caso según tus necesidades
+        }
+      this.processNote();
+    });
+  }
+
+  processNote() {
+    if (this.currentNote && !this.playedNotes.includes(this.currentNote)) {
+      this.playedNotes.push(this.currentNote);
+      this.analyzeScale();
+    }
   }
 
   analyzeScale() {
@@ -89,6 +122,10 @@ export class AppComponent {
     this.suggestedChords = [];
     this.audioStarted = false;
     this.selectedGenre = "";
+    this.selectedInputType = "";
+    // Detener los servicios si es necesario
+    this.audioService.stop();
+    this.midiService.stop();
   }
 
   // Nuevos métodos para obtener escalas y acordes según el género
