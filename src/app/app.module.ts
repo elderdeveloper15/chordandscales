@@ -2,32 +2,23 @@
 
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms'; // Importamos FormsModule
 
-// Importa tu componente principal
 import { AppComponent } from './app.component';
-
-// Importa el servicio de audio que has creado
 import { AudioService } from './services/audio.service';
-
-// Si tienes otros componentes, servicios o módulos, impórtalos aquí
-// import { OtroComponente } from './otro-componente/otro-componente.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    // Otros componentes que hayas creado
-    // OtroComponente,
+    // Otros componentes
   ],
   imports: [
     BrowserModule,
-    // Otros módulos que necesites
-    // Por ejemplo, si utilizas formularios:
-    // FormsModule,
+    FormsModule, // Agregamos FormsModule a los imports
   ],
   providers: [
     AudioService,
-    // Otros servicios que hayas creado
-    // OtroServicio,
+    // Otros servicios
   ],
   bootstrap: [AppComponent],
 })

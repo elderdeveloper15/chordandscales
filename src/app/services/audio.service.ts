@@ -15,12 +15,12 @@ export class AudioService {
   private detector!: any;
 
   constructor() {
-    // No creamos el AudioContext aquí
+    // No inicializamos el audioContext aquí
   }
 
   async initAudio() {
     try {
-      // Creamos el AudioContext en respuesta a la interacción del usuario
+      // Creamos el AudioContext dentro de initAudio()
       this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
 
       this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -36,6 +36,11 @@ export class AudioService {
       console.error('Error al acceder al micrófono:', err);
       throw err;
     }
+  }
+
+  // Agrega este método para obtener el audioContext
+  getAudioContext(): AudioContext {
+    return this.audioContext;
   }
 
   getPitch() {
