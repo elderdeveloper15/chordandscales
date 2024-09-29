@@ -1,8 +1,9 @@
 // src/app/app.component.ts
 
-import { Component } from '@angular/core';
+import { Component,NgZone  } from '@angular/core';
 import { AudioService } from './services/audio.service';
 import { MidiService } from './services/midi.service'; // Importa el servicio MIDI
+import { SynthService } from './services/synth.service'; // Importa SynthService
 import { freqToMidi } from '@tonaljs/midi';
 import  Note  from '@tonaljs/note';
 import { Scale, Chord } from '@tonaljs/tonal';
@@ -31,7 +32,9 @@ export class AppComponent {
 
   constructor(
     private audioService: AudioService,
-    private midiService: MidiService // Inyectamos el servicio MIDI
+    private midiService: MidiService, // Inyectamos el servicio MIDI
+    private synthService: SynthService, // Inyecta SynthService
+    private ngZone: NgZone // Inyectamos NgZone
   ) {}
 
   async start() {
@@ -39,7 +42,7 @@ export class AppComponent {
       alert('Por favor, selecciona el género musical y el tipo de entrada antes de continuar.');
       return;
     }
-
+  
     try {
       if (this.selectedInputType === 'microphone') {
         await this.audioService.initAudio();
@@ -72,18 +75,22 @@ export class AppComponent {
     }, 100);
   }
 
+  
   updatePitchFromMidi() {
     this.midiService.onNoteReceived((note: string, velocity: number) => {
-      this.currentNote = note;
-      const frequency = Note.freq(note);
+      // Ejecutamos dentro de NgZone para que Angular detecte los cambios
+      this.ngZone.run(() => {
+        console.log(`Callback de nota recibido: ${note}, Velocidad: ${velocity}`);
+        this.currentNote = note;
+        const frequency = Note.freq(note);
         if (frequency !== null) {
           this.currentFrequency = frequency;
+        } else {
+          console.warn(`No se pudo obtener la frecuencia para la nota ${note}`);
+          this.currentFrequency = 0;
         }
-        else {
-        console.warn(`No se pudo obtener la frecuencia para la nota ${note}`);
-        this.currentFrequency = 0; // O maneja este caso según tus necesidades
-        }
-      this.processNote();
+        this.processNote();
+      });
     });
   }
 

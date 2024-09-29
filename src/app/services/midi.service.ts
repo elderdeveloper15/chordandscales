@@ -3,6 +3,7 @@
 
 import { Injectable } from '@angular/core';
 import  Note  from '@tonaljs/note'; // Agrega esta línea
+import { SynthService } from './synth.service'; // Importa SynthService
 
 @Injectable({
   providedIn: 'root',
@@ -10,9 +11,9 @@ import  Note  from '@tonaljs/note'; // Agrega esta línea
 export class MidiService {
   private midiAccess!: WebMidi.MIDIAccess;
   private input!: WebMidi.MIDIInput;
-  private onNoteCallback!: (note: string, velocity: number) => void;
+  private onNoteCallback: ((note: string, velocity: number) => void) | null = null;
 
-  constructor() {}
+  constructor(private synthService: SynthService) {} // Inyecta SynthService
 
   async initMidi() {
     try {
@@ -41,8 +42,7 @@ export class MidiService {
 
   private handleMIDIMessage(message: WebMidi.MIDIMessageEvent) {
     const [command, noteNumber, velocity] = message.data;
-
-    // Filtrar solo mensajes de Note On (144) y Note Off (128)
+  
     const cmd = command & 0xf0;
     if (cmd === 144 && velocity > 0) {
       // Note On
@@ -50,9 +50,14 @@ export class MidiService {
       if (this.onNoteCallback) {
         this.onNoteCallback(note, velocity);
       }
+      // Reproducir la nota
+      this.synthService.playNote(noteNumber);
+    } else if (cmd === 128 || (cmd === 144 && velocity === 0)) {
+      // Note Off
+      this.synthService.stopNote(noteNumber);
     }
   }
-
+  
   private noteNumberToNoteName(noteNumber: number): string {
     return Note.fromMidi(noteNumber);
   }
