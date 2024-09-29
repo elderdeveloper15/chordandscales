@@ -20,6 +20,7 @@ export class AppComponent {
   currentScale!: string;
   suggestedChords: string[] = [];
   audioStarted = false;
+  scaleNotes: string[] = [];
 
   // Nueva propiedad para almacenar el género seleccionado
   selectedGenre!: string;
@@ -128,15 +129,20 @@ export class AppComponent {
   
     if (possibleScales.length > 0) {
       this.currentScale = `${this.currentNote} ${possibleScales[0]}`;
+  
+      // Obtenemos las notas de la escala detectada
+      const scale = Scale.get(this.currentScale);
+      this.scaleNotes = scale.notes;
+  
       this.suggestChords();
     } else {
       console.warn('No se encontraron escalas que incluyan las notas tocadas.');
       this.currentScale = '';
+      this.scaleNotes = [];
       this.suggestedChords = [];
     }
-  }
+  }  
   
-
   suggestChords() {
     if (!this.currentScale) {
       return;
@@ -154,6 +160,7 @@ export class AppComponent {
   reset() {
     this.playedNotes = [];
     this.currentScale = '';
+    this.scaleNotes = [];
     this.suggestedChords = [];
     this.currentNote = '';
     this.currentFrequency = 0;
@@ -164,6 +171,7 @@ export class AppComponent {
     this.audioService.stop();
     this.midiService.stop();
   }
+  
 
   // Nuevos métodos para obtener escalas y acordes según el género
   getScalesForGenre(genre: string): string[] {

@@ -30,11 +30,12 @@
 
     <div *ngIf="currentScale">
       <h3>Escala Detectada: {{ currentScale }}</h3>
+      <h3>Notas de la Escala: {{ scaleNotes.join(', ') }}</h3>
     </div>
     <div *ngIf="!currentScale && playedNotes.length >= 3">
       <h3>No se encontraron escalas que incluyan las notas tocadas.</h3>
     </div>
-    
+
     <div *ngIf="suggestedChords.length > 0">
       <h2>Acordes Sugeridos:</h2>
       <ul>
