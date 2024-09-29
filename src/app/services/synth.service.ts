@@ -1,48 +1,58 @@
 // src/app/services/synth.service.ts
 
 import { Injectable } from '@angular/core';
+import * as Soundfont from 'soundfont-player';
+import type { InstrumentName, Player } from 'soundfont-player';
+import  Note  from '@tonaljs/note';
+
+
 
 @Injectable({
   providedIn: 'root',
 })
 export class SynthService {
   private audioContext: AudioContext | null = null;
-  private oscillatorMap: Map<number, OscillatorNode> = new Map();
+  private piano: Player | null = null;
+  private nodeMap: Map<number, Soundfont.Player> = new Map();
 
   constructor() {
     // No creamos el AudioContext aquí
   }
 
-  private ensureAudioContext() {
+  async init() {
     if (!this.audioContext) {
-      // Creamos el AudioContext cuando se necesite, en respuesta a una interacción del usuario
       this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-    } else if (this.audioContext.state === 'suspended') {
-      // Reanudamos el AudioContext si está suspendido
-      this.audioContext.resume();
+    }
+    if (!this.piano) {
+      try {
+        const instrumentName: InstrumentName = 'acoustic_grand_piano';
+        this.piano = await Soundfont.instrument(this.audioContext, instrumentName);
+      } catch (error) {
+        console.error('Error al cargar el instrumento de piano:', error);
+      }
     }
   }
 
-  playNote(noteNumber: number) {
-    this.ensureAudioContext();
-
-    const frequency = this.midiNoteToFrequency(noteNumber);
-    const oscillator = this.audioContext!.createOscillator();
-    oscillator.frequency.value = frequency;
-    oscillator.type = 'sine'; // Puedes cambiar el tipo de onda si lo deseas
-    oscillator.connect(this.audioContext!.destination);
-    oscillator.start();
-
-    // Guardamos el oscilador para poder detenerlo después
-    this.oscillatorMap.set(noteNumber, oscillator);
+  async playNote(noteNumber: number) {
+    await this.init();
+  
+    if (this.audioContext!.state === 'suspended') {
+      await this.audioContext!.resume();
+    }
+  
+    const note = this.midiNoteToNoteName(noteNumber);
+    if (this.piano) {
+      const player = this.piano.play(note);
+      this.nodeMap.set(noteNumber, player); // Correcto
+    }
   }
+  
 
   stopNote(noteNumber: number) {
-    const oscillator = this.oscillatorMap.get(noteNumber);
-    if (oscillator) {
-      oscillator.stop();
-      oscillator.disconnect();
-      this.oscillatorMap.delete(noteNumber);
+    const player = this.nodeMap.get(noteNumber);
+    if (player) {
+      player.stop();
+      this.nodeMap.delete(noteNumber);
     }
   }
 
@@ -50,8 +60,7 @@ export class SynthService {
     return this.audioContext;
   }
 
-  private midiNoteToFrequency(noteNumber: number): number {
-    // Convierte el número de nota MIDI a frecuencia en Hz
-    return 440 * Math.pow(2, (noteNumber - 69) / 12);
+  private midiNoteToNoteName(noteNumber: number): string {
+    return Note.fromMidi(noteNumber);
   }
 }
