@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist/chordandscales",
+    "public": "dist/chordandscales/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
