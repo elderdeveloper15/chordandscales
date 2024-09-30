@@ -6,7 +6,16 @@ import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { AudioService } from './services/audio.service';
-import { MidiService } from './services/midi.service'; // Importa el servicio MIDI
+import { MidiService } from './services/midi.service';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async'; // Importa el servicio MIDI
+import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 @NgModule({
   declarations: [
@@ -16,10 +25,19 @@ import { MidiService } from './services/midi.service'; // Importa el servicio MI
   imports: [
     BrowserModule,
     FormsModule,
+    MatToolbarModule,
+    BrowserAnimationsModule,
+    MatIconModule,
+    MatIconModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatButtonModule
   ],
   providers: [
     AudioService,
-    MidiService, // Agrega el servicio MIDI
+    MidiService,
+    provideAnimationsAsync(), // Agrega el servicio MIDI
   ],
   bootstrap: [AppComponent],
 })

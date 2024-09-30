@@ -1,1 +1,78 @@
-/* You can add global styles to this file, and also import other style files */
+/* src/styles.css */
+
+/* Estilos generales */
+body {
+  font-family: Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Contenedor principal */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* Grupo de botones */
+.button-group {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+/* Estilos para mat-card */
+mat-card {
+  margin-bottom: 16px;
+  background-color: #ffffff; /* Fondo blanco */
+  color: rgb(255, 255, 255); /* Texto negro */
+}
+
+/* Estilos para mat-toolbar */
+mat-toolbar {
+  background-color: #3f51b5; /* Color primario */
+  color: white; /* Texto blanco */
+}
+
+/* Estilos para mat-icon dentro de la toolbar */
+mat-toolbar mat-icon {
+  margin-right: 8px;
+}
+
+/* Estilos para títulos y contenido de mat-card */
+mat-card-title,
+mat-card-content {
+  color: rgb(255, 255, 255); /* Texto negro */
+}
+
+/* Opcional: Si prefieres un fondo oscuro en mat-card */
+mat-card.dark-theme {
+  background-color: #424242; /* Gris oscuro */
+  color: white; /* Texto blanco */
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span,
+label {
+  color: inherit; /* Hereda el color del elemento padre */
+}
+
+/* Asegurar que los botones tengan un buen contraste */
+.mat-raised-button {
+  color: white; /* Texto blanco en botones */
+}
+
+/* Ajustar colores de los botones según su color */
+.mat-raised-button.mat-primary {
+  background-color: #3f51b5; /* Color primario */
+}
+
+.mat-raised-button.mat-accent {
+  background-color: #e91e63; /* Color acento */
+}

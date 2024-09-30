@@ -7,11 +7,18 @@ import { SynthService } from './services/synth.service'; // Importa SynthService
 import { freqToMidi } from '@tonaljs/midi';
 import  Note  from '@tonaljs/note';
 import { Scale, Chord } from '@tonaljs/tonal';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
+  animations: [
+    trigger('fadeIn', [
+      state('void', style({ opacity: 0 })),
+      transition(':enter', [animate('500ms ease-in')]),
+    ]),
+  ]
 })
 export class AppComponent {
   currentNote!: string;

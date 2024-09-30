@@ -1,48 +1,72 @@
 <!-- src/app/app.component.html -->
 
+<mat-toolbar color="primary">
+  <mat-icon>music_note</mat-icon>
+  <span>Chord and Scale Recommender</span>
+</mat-toolbar>
+
 <div class="container">
-  <h1>Detector de Escalas y Acordes</h1>
+  <!-- Tarjeta de Configuración Inicial -->
+  <mat-card>
+    <mat-card-title>Configuración Inicial</mat-card-title>
+    <mat-card-content>
+      <form>
+        <mat-form-field appearance="fill">
+          <mat-label>Género Musical</mat-label>
+          <mat-select [(value)]="selectedGenre">
+            <mat-option *ngFor="let genre of genres" [value]="genre">{{ genre }}</mat-option>
+          </mat-select>
+        </mat-form-field>
 
-  <div *ngIf="!audioStarted">
-    <p>Por favor, selecciona el género musical:</p>
-    <select [(ngModel)]="selectedGenre">
-      <option [ngValue]="null" disabled selected>Selecciona un género</option>
-      <option *ngFor="let genre of genres" [value]="genre">{{ genre }}</option>
-    </select>
+        <mat-form-field appearance="fill">
+          <mat-label>Tipo de Entrada</mat-label>
+          <mat-select [(value)]="selectedInputType">
+            <mat-option value="microphone">Micrófono</mat-option>
+            <mat-option value="midi">MIDI</mat-option>
+          </mat-select>
+        </mat-form-field>
 
-    <p>Selecciona el tipo de entrada:</p>
-    <select [(ngModel)]="selectedInputType">
-      <option [ngValue]="null" disabled selected>Selecciona una opción</option>
-      <option value="microphone">Micrófono</option>
-      <option value="midi">MIDI</option>
-    </select>
+        <div class="button-group">
+          <button mat-raised-button color="primary" (click)="start()">Iniciar Detección</button>
+          <button mat-raised-button color="accent" (click)="reset()">Reiniciar</button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
 
-    <button (click)="start()" [disabled]="!selectedGenre || !selectedInputType">
-      Iniciar Detección
-    </button>
+  <!-- Mensaje para Tocar Más Notas -->
+  <div *ngIf="playedNotes.length < 3 && audioStarted">
+    <mat-card>
+      <mat-card-content>
+        <p>
+          Por favor, toca al menos {{ 3 - playedNotes.length }} nota{{ 3 - playedNotes.length > 1 ? 's' : '' }} más para comenzar la detección de escalas y acordes.
+        </p>
+      </mat-card-content>
+    </mat-card>
   </div>
 
-  <div *ngIf="audioStarted">
-    <p><strong>Género Seleccionado:</strong> {{ selectedGenre }}</p>
-    <p><strong>Tipo de Entrada:</strong> {{ selectedInputType === 'microphone' ? 'Micrófono' : 'MIDI' }}</p>
-    <p><strong>Nota Actual:</strong> {{ currentNote }} ({{ currentFrequency | number:'1.0-2' }} Hz)</p>
-    <p><strong>Notas Tocadas:</strong> {{ playedNotes.join(', ') }}</p>
+  <!-- Tarjeta de Información de la Detección -->
+  <mat-card *ngIf="audioStarted">
+    <mat-card-title>Información de la Detección</mat-card-title>
+    <mat-card-content>
+      <p><strong>Nota Actual:</strong> {{ currentNote }} ({{ currentFrequency | number:'1.2-2' }} Hz)</p>
+      <p><strong>Notas Tocadas:</strong> {{ playedNotes.join(', ') }}</p>
 
-    <div *ngIf="currentScale">
-      <h3>Escala Detectada: {{ currentScale }}</h3>
-      <h3>Notas de la Escala: {{ scaleNotes.join(', ') }}</h3>
-    </div>
-    <div *ngIf="!currentScale && playedNotes.length >= 3">
-      <h3>No se encontraron escalas que incluyan las notas tocadas.</h3>
-    </div>
+      <div *ngIf="currentScale">
+        <p><strong>Escala Detectada:</strong> {{ currentScale }}</p>
+        <p><strong>Notas de la Escala:</strong> {{ scaleNotes.join(', ') }}</p>
+      </div>
 
-    <div *ngIf="suggestedChords.length > 0">
-      <h2>Acordes Sugeridos:</h2>
-      <ul>
-        <li *ngFor="let chord of suggestedChords">{{ chord }}</li>
-      </ul>
-    </div>
+      <div *ngIf="!currentScale && playedNotes.length >= 3">
+        <p>No se encontraron escalas que incluyan las notas tocadas.</p>
+      </div>
 
-    <button (click)="reset()">Reiniciar</button>
-  </div>
+      <div *ngIf="suggestedChords.length > 0">
+        <p><strong>Acordes Sugeridos:</strong></p>
+        <ul>
+          <li *ngFor="let chord of suggestedChords">{{ chord }}</li>
+        </ul>
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>
