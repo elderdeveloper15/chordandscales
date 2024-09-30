@@ -1,0 +1,50 @@
+/* src/app/piano/piano.component.css */
+
+.piano {
+    position: relative;
+    width: 700px;
+    height: 200px;
+    margin: 0 auto;
+  }
+  
+  .key {
+    position: absolute;
+    height: 100%;
+    border: 1px solid black;
+  }
+  
+  .white-key {
+    width: 50px;
+    background: white;
+    z-index: 1;
+  }
+  
+  .black-key {
+    width: 30px;
+    height: 60%;
+    background: black;
+    z-index: 2;
+  }
+  
+  .active.white-key {
+    background: #9e00fa; /* Amarillo para teclas blancas activas */
+  }
+  
+  .active.black-key {
+    background: #9e00fa; /* Amarillo oscuro para teclas negras activas */
+  }
+  
+  /* Posiciones de las teclas */
+  .key:nth-child(1)  { left: 0px; }   /* C */
+  .key:nth-child(2)  { left: 35px; }  /* C# */
+  .key:nth-child(3)  { left: 50px; }  /* D */
+  .key:nth-child(4)  { left: 85px; }  /* D# */
+  .key:nth-child(5)  { left: 100px; } /* E */
+  .key:nth-child(6)  { left: 150px; } /* F */
+  .key:nth-child(7)  { left: 185px; } /* F# */
+  .key:nth-child(8)  { left: 200px; } /* G */
+  .key:nth-child(9)  { left: 235px; } /* G# */
+  .key:nth-child(10) { left: 250px; } /* A */
+  .key:nth-child(11) { left: 285px; } /* A# */
+  .key:nth-child(12) { left: 300px; } /* B */
+  

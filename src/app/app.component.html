@@ -45,6 +45,10 @@
     </mat-card>
   </div>
 
+    <!-- Añade esto en el lugar apropiado dentro de tu plantilla -->
+
+  
+
   <!-- Tarjeta de Información de la Detección -->
   <mat-card *ngIf="audioStarted">
     <mat-card-title>Información de la Detección</mat-card-title>
@@ -67,6 +71,10 @@
           <li *ngFor="let chord of suggestedChords">{{ chord }}</li>
         </ul>
       </div>
+    
     </mat-card-content>
   </mat-card>
+  <div *ngIf="selectedInputType === 'midi'">
+    <app-piano [activeNote]="currentNote"></app-piano>
+  </div>
 </div>

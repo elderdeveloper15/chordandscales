@@ -1,0 +1,15 @@
+<!-- src/app/piano/piano.component.html -->
+
+<div class="piano">
+    <div
+      *ngFor="let key of keys"
+      class="key"
+      [class.white-key]="!key.isSharp"
+      [class.black-key]="key.isSharp"
+      [class.active]="isActive(key.note)"
+    >
+      <!-- Opcional: Mostrar el nombre de la nota -->
+      <!-- <span>{{ key.note }}</span> -->
+    </div>
+  </div>
+  

@@ -15,11 +15,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PianoComponent } from './piano/piano.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
+    PianoComponent,
     // Otros componentes
   ],
   imports: [
