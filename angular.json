@@ -13,6 +13,10 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
+            "allowedCommonJsDependencies": [
+              "soundfont-player",
+              "fft.js"
+            ],
             "outputPath": "dist/chordandscales",
             "index": "src/index.html",
             "browser": "src/main.ts",
