@@ -74,6 +74,20 @@
     
     </mat-card-content>
   </mat-card>
+
+  <div *ngIf="audioStarted && selectedInputType === 'microphone'">
+    <button mat-raised-button (click)="toggleMute()">
+      {{ audioService.isMuted ? '¿Quieres escucharte?' : 'Dejar de escucharte' }}
+    </button>
+  </div>
+  
+  <!-- Mensaje de advertencia cuando el micrófono está desmuteado -->
+  <div *ngIf="audioStarted && selectedInputType === 'microphone' && !audioService.isMuted" class="warning">
+    <p>
+      <strong>Advertencia:</strong> Por favor, utiliza auriculares para evitar feedback de audio.
+    </p>
+  </div>
+
   <div *ngIf="selectedInputType === 'midi'">
     <app-piano [activeNote]="currentNote"></app-piano>
   </div>

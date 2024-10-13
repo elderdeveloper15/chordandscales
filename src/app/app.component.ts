@@ -39,7 +39,7 @@ export class AppComponent {
 
 
   constructor(
-    private audioService: AudioService,
+    public audioService: AudioService,
     private midiService: MidiService, // Inyectamos el servicio MIDI
     private synthService: SynthService, // Inyecta SynthService
     private ngZone: NgZone // Inyectamos NgZone
@@ -83,6 +83,9 @@ export class AppComponent {
     }, 100);
   }
 
+  toggleMute() {
+    this.audioService.toggleMute();
+  }
   
   updatePitchFromMidi() {
     this.midiService.onNoteReceived((note: string, velocity: number) => {

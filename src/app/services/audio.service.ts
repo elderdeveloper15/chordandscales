@@ -14,6 +14,10 @@ export class AudioService {
   private buffer!: Float32Array;
   private detector!: any;
 
+  // Nuevas propiedades
+  private gainNode!: GainNode;
+  public isMuted: boolean = true; // El audio está muteado por defecto
+
   constructor() {
     // No inicializamos el audioContext aquí
   }
@@ -27,6 +31,18 @@ export class AudioService {
 
       this.analyser = this.audioContext.createAnalyser();
       this.input = this.audioContext.createMediaStreamSource(this.stream);
+
+      // Crear un GainNode para controlar el volumen (mute/unmute)
+      this.gainNode = this.audioContext.createGain();
+      this.gainNode.gain.value = 0; // Iniciamos en mute
+
+      // Conectar la fuente del micrófono al GainNode
+      this.input.connect(this.gainNode);
+
+      // Conectar el GainNode a la salida de audio (speakers)
+      this.gainNode.connect(this.audioContext.destination);
+
+      // También conectamos la entrada al analyser para la detección de pitch
       this.input.connect(this.analyser);
 
       const bufferLength = 2048;
@@ -38,7 +54,14 @@ export class AudioService {
     }
   }
 
-  // Agrega este método para obtener el audioContext
+  // Método para mutear/desmutear el audio
+  toggleMute() {
+    if (this.gainNode) {
+      this.isMuted = !this.isMuted;
+      this.gainNode.gain.value = this.isMuted ? 0 : 1;
+    }
+  }
+
   getAudioContext(): AudioContext {
     return this.audioContext;
   }
@@ -56,6 +79,9 @@ export class AudioService {
   stop() {
     if (this.stream) {
       this.stream.getTracks().forEach((track) => track.stop());
+    }
+    if (this.audioContext) {
+      this.audioContext.close();
     }
   }
 }

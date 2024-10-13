@@ -51,6 +51,15 @@ mat-card.dark-theme {
   color: white; /* Texto blanco */
 }
 
+.warning {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 16px;
+  margin: 16px 0;
+  border: 1px solid #ffeeba;
+  border-radius: 4px;
+}
+
 p,
 h1,
 h2,
