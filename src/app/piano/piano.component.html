@@ -1,15 +1,16 @@
 <!-- src/app/piano/piano.component.html -->
 
 <div class="piano">
-    <div
-      *ngFor="let key of keys"
-      class="key"
-      [class.white-key]="!key.isSharp"
-      [class.black-key]="key.isSharp"
-      [class.active]="isActive(key.note)"
-    >
-      <!-- Opcional: Mostrar el nombre de la nota -->
-      <!-- <span>{{ key.note }}</span> -->
-    </div>
+  <div
+    *ngFor="let key of keys; let i = index"
+    class="key"
+    [class.white-key]="!key.isSharp"
+    [class.black-key]="key.isSharp"
+    [class.active]="isActive(key.note)"
+    [class.in-scale]="isInScale(key.note)"
+    [style.left.px]="getKeyPosition(i)"
+  >
+    <!-- Mostrar el nombre de la nota -->
+    <span class="note-label">{{ key.note }}</span>
   </div>
-  
+</div>

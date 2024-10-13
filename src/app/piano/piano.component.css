@@ -1,38 +1,67 @@
 /* src/app/piano/piano.component.css */
 
 .piano {
-    position: relative;
-    width: 700px;
-    height: 200px;
-    margin: 0 auto;
-  }
-  
-  .key {
-    position: absolute;
-    height: 100%;
-    border: 1px solid black;
-  }
-  
-  .white-key {
-    width: 50px;
-    background: white;
-    z-index: 1;
-  }
-  
-  .black-key {
-    width: 30px;
-    height: 60%;
-    background: black;
-    z-index: 2;
-  }
-  
-  .active.white-key {
-    background: #9e00fa; /* Amarillo para teclas blancas activas */
-  }
-  
-  .active.black-key {
-    background: #9e00fa; /* Amarillo oscuro para teclas negras activas */
-  }
+  position: relative;
+  width: 700px; /* Ajusta según sea necesario */
+  height: 200px;
+  margin: 0 auto;
+}
+
+.key {
+  position: absolute;
+  border: 1px solid black;
+  box-sizing: border-box;
+}
+
+.white-key {
+  width: 50px;
+  height: 100%;
+  background: white;
+  z-index: 1;
+}
+
+.black-key {
+  width: 30px;
+  height: 60%;
+  background: black;
+  z-index: 2;
+}
+
+.active.white-key {
+  background: #ffeb3b; /* Amarillo para teclas blancas activas */
+}
+
+.active.black-key {
+  background: #ffc107; /* Amarillo oscuro para teclas negras activas */
+}
+
+.in-scale.white-key {
+  background: #a5d6a7; /* Verde claro para teclas blancas de la escala */
+}
+
+.in-scale.black-key {
+  background: #66bb6a; /* Verde más oscuro para teclas negras de la escala */
+}
+
+.note-label {
+  position: absolute;
+  bottom: 5px;
+  width: 100%;
+  text-align: start;
+  font-size: 14px;
+  color: rgb(255, 0, 0);
+}
+
+.black-key .note-label {
+  position: absolute;
+  bottom: 5px;
+  left: 4px;
+  width: 100%;
+  text-align: start;
+  font-size: 14px;
+  color: rgb(255, 0, 0);
+}
+
   
   /* Posiciones de las teclas */
   .key:nth-child(1)  { left: 0px; }   /* C */

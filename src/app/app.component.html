@@ -59,6 +59,7 @@
       <div *ngIf="currentScale">
         <p><strong>Escala Detectada:</strong> {{ currentScale }}</p>
         <p><strong>Notas de la Escala:</strong> {{ scaleNotes.join(', ') }}</p>
+        <app-piano [scaleNotes]="scaleNotes"></app-piano>
       </div>
 
       <div *ngIf="!currentScale && playedNotes.length >= 3">
