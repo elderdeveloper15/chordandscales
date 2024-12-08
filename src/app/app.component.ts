@@ -28,12 +28,26 @@ export class AppComponent {
   suggestedChords: string[] = [];
   audioStarted = false;
   scaleNotes: string[] = [];
+  public isMidiPaused: boolean = false;
+
 
   // Nueva propiedad para almacenar el género seleccionado
   selectedGenre!: string;
 
   // Lista de géneros disponibles
-  genres: string[] = ['Rock', 'Jazz', 'Blues', 'Pop', 'Clásica'];
+  // app.component.ts
+  genres: string[] = [
+    'Rock',
+    'Jazz',
+    'Blues',
+    'Pop',
+    'Clásica',
+    'Metal',
+    'Funk',
+    'Country',
+    'R&B',
+    'Reggae'
+  ];
 
   selectedInputType!: string; // 'microphone' o 'midi'
 
@@ -86,6 +100,16 @@ export class AppComponent {
   toggleMute() {
     this.audioService.toggleMute();
   }
+
+  // Método para pausar la detección MIDI
+  pauseMidi() {
+    this.isMidiPaused = true;
+  }
+
+  // Método para reanudar la detección MIDI
+  playMidi() {
+    this.isMidiPaused = false;
+  }
   
   updatePitchFromMidi() {
     this.midiService.onNoteReceived((note: string, velocity: number) => {
@@ -100,6 +124,9 @@ export class AppComponent {
         } else {
           console.warn(`No se pudo obtener la frecuencia para la nota ${note}`);
           this.currentFrequency = 0;
+        }
+        if (this.isMidiPaused) {
+          return;
         }
         this.processNote();
       });
@@ -120,6 +147,13 @@ export class AppComponent {
       }
     }
   }  
+
+  getChordNotes(chord: string): string[] {
+    const c = Chord.get(chord);
+    if (!c || c.notes.length === 0) return [];
+    // Convertir las notas del acorde a su pitch class (sin octava)
+    return c.notes.map(n => Note.pitchClass(n));
+  }
 
   analyzeScale() {
     // Obtenemos las escalas posibles según el género seleccionado
@@ -183,7 +217,8 @@ export class AppComponent {
   }
   
 
-  // Nuevos métodos para obtener escalas y acordes según el género
+  // Ejemplo de código actualizado en app.component.ts
+
   getScalesForGenre(genre: string): string[] {
     switch (genre) {
       case 'Rock':
@@ -196,6 +231,24 @@ export class AppComponent {
         return ['major', 'minor'];
       case 'Clásica':
         return ['major', 'minor', 'harmonic minor', 'melodic minor'];
+
+      // Géneros adicionales
+      case 'Metal':
+        // Escalas oscuras y agresivas: phrygian, locrian, minor, harmonic minor
+        return ['phrygian', 'locrian', 'minor', 'harmonic minor'];
+      case 'Funk':
+        // Funk: escalas modales y brillantes: dorian, mixolydian, major, lydian
+        return ['dorian', 'mixolydian', 'major', 'lydian'];
+      case 'Country':
+        // Country: escalas mayor y pentatónicas: major, major pentatonic, mixolydian
+        return ['major', 'major pentatonic', 'mixolydian'];
+      case 'R&B':
+        // R&B: escalas suaves y modales: minor, minor pentatonic, dorian
+        return ['minor', 'minor pentatonic', 'dorian'];
+      case 'Reggae':
+        // Reggae: mayor y modos brillantes: major, ionian, lydian
+        return ['major', 'ionian', 'lydian'];
+
       default:
         return Scale.names(); // Todas las escalas si el género no es reconocido
     }
@@ -213,8 +266,22 @@ export class AppComponent {
         return 'maj'; // Acordes mayores
       case 'Clásica':
         return 'maj'; // Acordes mayores
+
+      // Géneros adicionales
+      case 'Metal':
+        return 'dim'; // Acordes disminuidos, aportan tensión
+      case 'Funk':
+        return '9'; // Acordes con novena, muy utilizados en funk
+      case 'Country':
+        return '7'; // Acordes dominantes séptima, muy comunes en country
+      case 'R&B':
+        return 'maj7'; // Acordes mayores séptima, suaves y ricos en R&B
+      case 'Reggae':
+        return 'maj'; // Acordes mayores simples
+
       default:
         return 'maj'; // Acordes mayores por defecto
     }
   }
+
 }

@@ -8,6 +8,7 @@
     [class.black-key]="key.isSharp"
     [class.active]="isActive(key.note)"
     [class.in-scale]="isInScale(key.note)"
+    [class.chord-note]="isChordNote(key.note)"
     [style.left.px]="getKeyPosition(i)"
   >
     <!-- Mostrar el nombre de la nota -->

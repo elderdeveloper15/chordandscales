@@ -10,6 +10,8 @@ import { Component, Input } from '@angular/core';
 export class PianoComponent {
   @Input() activeNote: string | null = null;
   @Input() scaleNotes: string[] = []; // Para resaltar notas de la escala
+  @Input() chordNotes: string[] = []; // Nueva propiedad
+
 
   keys = [
     { note: 'C', isSharp: false },
@@ -32,6 +34,10 @@ export class PianoComponent {
 
   isInScale(note: string): boolean {
     return this.scaleNotes.includes(note);
+  }
+
+  isChordNote(note: string): boolean {
+    return this.chordNotes.includes(note);
   }
 
   getKeyPosition(index: number): number {

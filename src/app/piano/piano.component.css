@@ -62,6 +62,10 @@
   color: rgb(255, 0, 0);
 }
 
+
+.chord-note {
+  background: #66bb6a; /* Verde para las notas del acorde */
+}
   
   /* Posiciones de las teclas */
   .key:nth-child(1)  { left: 0px; }   /* C */

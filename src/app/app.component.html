@@ -30,6 +30,15 @@
           <button mat-raised-button color="primary" (click)="start()">Iniciar Detección</button>
           <button mat-raised-button color="accent" (click)="reset()">Reiniciar</button>
         </div>
+
+        <div *ngIf="audioStarted && selectedInputType === 'midi'">
+          <button mat-raised-button color="warn" (click)="pauseMidi()" [disabled]="isMidiPaused">
+            Pausar detección
+          </button>
+          <button mat-raised-button color="primary" (click)="playMidi()" [disabled]="!isMidiPaused">
+            Reaudar detección
+          </button>
+        </div>
       </form>
     </mat-card-content>
   </mat-card>
@@ -69,7 +78,10 @@
       <div *ngIf="suggestedChords.length > 0">
         <p><strong>Acordes Sugeridos:</strong></p>
         <ul>
-          <li *ngFor="let chord of suggestedChords">{{ chord }}</li>
+          <li *ngFor="let chord of suggestedChords">
+            {{ chord }}
+            <app-piano [chordNotes]="getChordNotes(chord)"></app-piano>
+          </li>
         </ul>
       </div>
     
@@ -92,4 +104,9 @@
   <div *ngIf="selectedInputType === 'midi'">
     <app-piano [activeNote]="currentNote"></app-piano>
   </div>
+
+  <!-- src/app/app.component.html -->
+
+
+
 </div>
